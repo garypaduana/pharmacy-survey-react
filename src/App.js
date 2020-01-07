@@ -40,63 +40,113 @@ function App() {
 }
 
 class Survey extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {
-        currentQuestion: "1"
-      };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentQuestion: "1",
+      responses: {},
+      tempValues: {}
+    };
+    this.onQuestionAnswered = this.onQuestionAnswered.bind(this);
+    this.onTempFieldStorage = this.onTempFieldStorage.bind(this);
+  }
 
-    render() {
-      let question = this.props.questions.find(question => question.number === this.state.currentQuestion);
-      let content = question ? <Question question={question} labels={this.props.labels}/> :
-          <p>Question {this.state.currentQuestion} not found!</p>;
-      return (
-          <div className="Survey">
-            <p>Question "{this.state.currentQuestion}" of {this.props.questions.length}</p>
-            {content}
-            <button>Previous</button>
-            <button>Next</button>
-          </div>
-      );
-    }
+  sleep(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+
+  onTempFieldStorage(number, tempValue) {
+    this.setState({
+      tempValues: {
+        [number]: tempValue
+      }
+    })
+  }
+
+  onQuestionAnswered(number, response) {
+    this.setState({
+      responses: {
+        [number]: response
+      }
+    });
+
+    this.setState({
+      tempValues: {
+        [number]: null
+      }
+    });
+
+    this.sleep(50).then(() => {
+      alert("number: " + number + "; response: " + response + "; state: " + JSON.stringify(this.state));
+    });
+  }
+
+  render() {
+    let question = this.props.questions.find(question => question.number === this.state.currentQuestion);
+    let response = Object.keys(this.state.responses).find(key => key === question.number);
+    let content = question ? <Question question={question}
+                                       tempValues={this.state.tempValues}
+                                       labels={this.props.labels}
+                                       response={response}
+                                       onQuestionAnswered={this.onQuestionAnswered}
+                                       onTempFieldStorage={this.onTempFieldStorage} /> :
+        <p>Question {this.state.currentQuestion} not found!</p>;
+
+    return (
+        <div className="Survey">
+          <p>Question "{this.state.currentQuestion}" of {this.props.questions.length}</p>
+          {content}
+          <button>Previous</button>
+          <button>Next</button>
+        </div>
+    );
+  }
 }
 
 class Question extends React.Component {
   constructor(props) {
     super(props);
+
+    const tempValue = this.props.tempValues[this.props.question.number];
+    const response = tempValue ? tempValue : this.props.response;
+
     this.state = {
-      response: null
+      response: response
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
+
+    this.handleSubmitDatePickerOptional = this.handleSubmitDatePickerOptional.bind(this);
   }
 
   handleDatePickerChange = date => {
+    this.props.onTempFieldStorage(this.props.question.number, date)
     this.setState({
       response: date
-    })
+    });
   };
 
-  handleSubmit(event) {
-    alert("Response is " + this.state.response);
+  handleSubmitDatePickerOptional(event) {
+    this.props.onQuestionAnswered(this.props.question.number, this.state.response);
+    event.preventDefault();
   }
 
   generateInputOptions(startDate) {
     let inputOptions = <div></div>
-    let response = this.props.question.questionForPatient.responseType;
+    let responseType = this.props.question.questionForPatient.responseType;
 
-    if (response === "DATE_PICKER_OPTIONAL") {
+    if (responseType === "DATE_PICKER_OPTIONAL") {
       inputOptions = (
-          <div>
+          <form onSubmit={this.handleSubmitDatePickerOptional}>
             <DatePicker className="DatePicker"
-                        placeholderText={this.props.labels[response].positive}
+                        placeholderText={this.props.labels[responseType].positive}
                         maxDate={new Date()}
                         isClearable
                         selected={this.state.response}
                         onChange={this.handleDatePickerChange}/>
-            <button onClick={this.handleSubmit}>
-                {startDate === null ? this.props.labels[response].optional : this.props.labels.DEFAULT.submit}</button>
-          </div>
+            <input type="submit"
+                   value={(startDate === null || startDate === undefined) ?
+                       this.props.labels[responseType].optional :
+                       this.props.labels.DEFAULT.submit}/>
+          </form>
       );
     }
     return inputOptions;
