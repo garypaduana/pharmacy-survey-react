@@ -9,13 +9,30 @@ function App() {
     questions: [
       {
         number: "1",
-        nextNumber: {
-          "*": "2"
-        },
+        nextNumber:[
+          {
+            pattern: ".*",
+            next: "2"
+          }
+        ],
         stateSpecific: [],
         questionForPatient: {
           responseType: "DATE_PICKER_OPTIONAL",
           question: "When is the first day of your last menstrual period?",
+        }
+      },
+      {
+        number: "2",
+        nextNumber:[
+          {
+            pattern: ".*",
+            next: "3"
+          }
+        ],
+        stateSpecific: [],
+        questionForPatient: {
+          responseType: "DATE_PICKER_OPTIONAL",
+          question: "What is your date of birth?",
         }
       }
     ],
@@ -24,8 +41,7 @@ function App() {
         submit: "Submit"
       },
       DATE_PICKER_OPTIONAL: {
-        positive: "Select a date",
-        optional: "I do not remember"
+        empty: "I do not remember"
       }
     }
   };
@@ -45,59 +61,106 @@ class Survey extends React.Component {
     this.state = {
       currentQuestion: "1",
       responses: {},
-      tempValues: {}
+      history: [],
+      nextEnabled: true,
+      previousEnabled: true
     };
+    this.setState({
+      history: [...this.state.history, this.state.currentQuestion]
+    });
     this.onQuestionAnswered = this.onQuestionAnswered.bind(this);
-    this.onTempFieldStorage = this.onTempFieldStorage.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.goNext = this.goNext.bind(this);
+    this.goPrevious = this.goPrevious.bind(this);
   }
 
   sleep(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
   }
 
-  onTempFieldStorage(number, tempValue) {
-    this.setState({
-      tempValues: {
-        [number]: tempValue
-      }
-    })
-  }
-
   onQuestionAnswered(number, response) {
-    this.setState({
+    this.setState((prevState, props) => ({
       responses: {
+        ...prevState.responses,
         [number]: response
       }
-    });
+    }));
 
-    this.setState({
-      tempValues: {
-        [number]: null
+    // this.sleep(50).then(() => {
+    //   alert("number: " + number + "; response: " + response + "; state: " + JSON.stringify(this.state));
+    // });
+  }
+
+  handleSubmit(event) {
+    alert("name: " + event.target.name + "; value: " + event.target.value);
+    event.preventDefault();
+  }
+
+  goPrevious(event) {
+    if (this.state.history.length > 0) {
+      let previous = this.state.history.slice(this.state.history.length - 2, this.state.history.length - 1);
+      if (previous.length === 0) {
+        previous = "1";
       }
-    });
+      this.setState({
+        currentQuestion: previous,
+        history: [...this.state.history.slice(0, this.state.history.length - 1)],
+        nextEnabled: true
+      });
+    }
+    else {
+      this.setState({
+        previousEnabled: false,
+        nextEnabled: true
+      });
+      alert("You are at the beginning!")
+    }
+  }
 
-    this.sleep(50).then(() => {
-      alert("number: " + number + "; response: " + response + "; state: " + JSON.stringify(this.state));
-    });
+  goNext(event) {
+    // Get the object of the current question
+    let question = this.props.questions.find(question => question.number === this.state.currentQuestion);
+
+    // Figure out what the next question is based on the answer to the current question.
+    let nextQuestion = question.nextNumber.find(entry => {
+      return new RegExp(entry.pattern).test(this.state.responses[this.state.currentQuestion])
+    }).next;
+
+    // Only advance to the next question if it exists based on the previous answer.
+    // Add the current question to the stack of history.
+    if (nextQuestion !== null && this.props.questions.find(question => question.number === nextQuestion)) {
+      this.setState({
+        currentQuestion: nextQuestion,
+        history: [...this.state.history, question.number],
+        previousEnabled: true
+      });
+    }
+    else {
+      alert("Next question not available.")
+      this.setState({
+        nextEnabled: false,
+        previousEnabled: true
+      })
+    }
   }
 
   render() {
     let question = this.props.questions.find(question => question.number === this.state.currentQuestion);
-    let response = Object.keys(this.state.responses).find(key => key === question.number);
     let content = question ? <Question question={question}
-                                       tempValues={this.state.tempValues}
                                        labels={this.props.labels}
-                                       response={response}
-                                       onQuestionAnswered={this.onQuestionAnswered}
-                                       onTempFieldStorage={this.onTempFieldStorage} /> :
+                                       response={this.state.responses[this.state.currentQuestion]}
+                                       onQuestionAnswered={this.onQuestionAnswered} /> :
         <p>Question {this.state.currentQuestion} not found!</p>;
 
     return (
         <div className="Survey">
-          <p>Question "{this.state.currentQuestion}" of {this.props.questions.length}</p>
-          {content}
-          <button>Previous</button>
-          <button>Next</button>
+          <form onSubmit={this.handleSubmit}>
+            <p>Question "{this.state.currentQuestion}" of {this.props.questions.length}</p>
+            {content}
+          </form>
+          <button type="submit" name="button_previous" onClick={this.goPrevious} disabled={!this.state.previousEnabled}>Previous</button>
+          <button type="submit" name="button_next" onClick={this.goNext} disabled={!this.state.nextEnabled}>Next</button>
+
         </div>
     );
   }
@@ -106,47 +169,25 @@ class Survey extends React.Component {
 class Question extends React.Component {
   constructor(props) {
     super(props);
-
-    const tempValue = this.props.tempValues[this.props.question.number];
-    const response = tempValue ? tempValue : this.props.response;
-
-    this.state = {
-      response: response
-    };
-
-    this.handleSubmitDatePickerOptional = this.handleSubmitDatePickerOptional.bind(this);
   }
 
   handleDatePickerChange = date => {
-    this.props.onTempFieldStorage(this.props.question.number, date)
-    this.setState({
-      response: date
-    });
+    // alert("date: " + date);
+    this.props.onQuestionAnswered(this.props.question.number, date)
   };
-
-  handleSubmitDatePickerOptional(event) {
-    this.props.onQuestionAnswered(this.props.question.number, this.state.response);
-    event.preventDefault();
-  }
 
   generateInputOptions(startDate) {
     let inputOptions = <div></div>
     let responseType = this.props.question.questionForPatient.responseType;
-
+    // alert("response: " + this.props.response);
     if (responseType === "DATE_PICKER_OPTIONAL") {
       inputOptions = (
-          <form onSubmit={this.handleSubmitDatePickerOptional}>
-            <DatePicker className="DatePicker"
-                        placeholderText={this.props.labels[responseType].positive}
-                        maxDate={new Date()}
-                        isClearable
-                        selected={this.state.response}
-                        onChange={this.handleDatePickerChange}/>
-            <input type="submit"
-                   value={(startDate === null || startDate === undefined) ?
-                       this.props.labels[responseType].optional :
-                       this.props.labels.DEFAULT.submit}/>
-          </form>
+          <DatePicker className="DatePicker"
+                      placeholderText={this.props.labels[responseType].empty}
+                      maxDate={new Date()}
+                      isClearable
+                      selected={this.props.response}
+                      onChange={this.handleDatePickerChange}/>
       );
     }
     return inputOptions;
@@ -156,7 +197,7 @@ class Question extends React.Component {
     return (
         <div className="Question">
           <p>{this.props.question.questionForPatient.question}</p>
-          {this.generateInputOptions(this.state.response)}
+          {this.generateInputOptions(this.props.response)}
         </div>
     );
   }
