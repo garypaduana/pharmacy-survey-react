@@ -1,0 +1,122 @@
+{
+  "questions": [
+    {
+      "number": "1",
+      "nextNumber": [
+        {"pattern": ".*", "next": "2"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "DATE_PICKER_OPTIONAL",
+        "question": "When is the first day of your last menstrual period?"
+      }
+    },
+    {
+      "number": "2",
+      "nextNumber": [
+        {"pattern": "Yes", "next": "3"},
+        {"pattern": "No", "next": "4"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "SINGLE_SELECTION",
+        "question": "Have you had sex without birth control in the last 5 days? (if more than 5 days since first day of LMP)",
+        "options": [
+          "Yes", "No"
+        ]
+      }
+    },
+    {
+      "number": "3",
+      "nextNumber": [
+        {"pattern": ".*", "next": "4"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "SINGLE_SELECTION",
+        "question": "Would you like to receive emergency contraceptive medications?",
+        "options": [
+          "Yes", "No"
+        ]
+      }
+    },
+    {
+      "number": "4",
+      "nextNumber": [
+        {"pattern": ".*", "next": "5"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "SINGLE_SELECTION",
+        "question": "Do you think you may be pregnant now?",
+        "options": [
+          "Yes", "No"
+        ]
+      }
+    },
+    {
+      "number": "5",
+      "nextNumber": [
+        {"pattern": ".*", "next": "6"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "SINGLE_SELECTION",
+        "question": "What is your favorite?",
+        "options": [
+          "Meatloaf", "oranges", "pizza", "generic groceries"
+        ]
+      }
+    },
+    {
+      "number": "6",
+      "nextNumber": [
+        {"pattern": ".*", "next": "7"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "MULTIPLE_SELECTION",
+        "question": "Which are your favorite?",
+        "options": [
+          "Meatloaf", "oranges", "pizza", "generic groceries"
+        ]
+      }
+    },
+    {
+      "number": "7",
+      "nextNumber": [
+        {"pattern": ".*", "next": "8"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "SINGLE_SELECTION_THEN_MULTIPLE_SELECTION",
+        "question": "Did you ever experience a bad reaction to using hormonal birth control? If yes, what kind of reaction occurred?",
+        "options": {
+          "Yes": [
+            "Sore breasts",
+            "Spotting or bleeding between periods",
+            "Nausea",
+            "Headaches or migraines",
+            "Acne",
+            "Weight gain",
+            "Dark pigmention on face",
+            "Depression",
+            "Yeast infection",
+            "Blood clots",
+            "Others: (please list them here)"
+          ],
+          "No": [],
+          "I do not understand the question.  I need clarification from a pharmacist.": []
+        }
+      }
+    }
+  ],
+  "labels": {
+    "DEFAULT": {
+      "submit": "Submit"
+    },
+    "DATE_PICKER_OPTIONAL": {
+      "empty": "I do not remember"
+    }
+  }
+}
