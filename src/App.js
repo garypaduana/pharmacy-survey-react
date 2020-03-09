@@ -85,7 +85,6 @@ class Survey extends React.Component {
         previousEnabled: false,
         nextEnabled: true
       });
-      alert("You are at the beginning!")
     }
   }
 
@@ -116,12 +115,10 @@ class Survey extends React.Component {
         }
       });
     } else {
-      alert("Next question not available.")
       this.setState({
         nextEnabled: false,
         previousEnabled: true
       })
-      alert(JSON.stringify(this.state.responses));
     }
   }
 
@@ -155,20 +152,28 @@ class Survey extends React.Component {
                                        labels={this.props.labels}
                                        response={this.state.responses[this.state.currentQuestion]}
                                        onQuestionAnswered={this.onQuestionAnswered}
+                                       validationError={!this.state.nextEnabled}
                                        resetButtons={this.resetButtons}/> :
         <p>Question {this.state.currentQuestion} not found!</p>;
 
     return (
         <div>
-          <div className="Survey">
+          <div className="container survey">
+            <div className="header"> Question "{this.state.currentQuestion}" of {this.props.questions.length}</div>
             <form onSubmit={this.handleSubmit}>
-              <p>Question "{this.state.currentQuestion}" of {this.props.questions.length}</p>
-              {content}
+              <div className="question">{content}</div>
             </form>
-            <button type="submit" name="button_previous" onClick={this.goPrevious}
+            <button className="navigation"
+                    type="submit"
+                    name="button_previous"
+                    onClick={this.goPrevious}
                     disabled={!this.state.previousEnabled}>Previous
             </button>
-            <button type="submit" name="button_next" onClick={this.goNext} disabled={!this.state.nextEnabled}>Next
+            <button className="navigation"
+                    type="submit"
+                    name="button_next"
+                    onClick={this.goNext}
+                    disabled={!this.state.nextEnabled}>Next
             </button>
             <br/>
           </div>
@@ -180,9 +185,6 @@ class Survey extends React.Component {
 }
 
 class Question extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   handleDatePickerChange = date => {
     this.props.onQuestionAnswered(this.props.question.number, date);
@@ -218,7 +220,7 @@ class Question extends React.Component {
     if (others) {
       let text = event.target.value;
       // if the free text length falls to zero, remove the "other" value from the response
-      if (text.length == 0) {
+      if (text.length === 0) {
         delete response[parent][child];
       }
       else {
@@ -247,7 +249,7 @@ class Question extends React.Component {
       children = optionsAlias[parent].map((child) => {
         let control;
         if (new RegExp("Other.*").test(child)) {
-          control = (<div>
+          control = (<div className="child">
             {child} <input type="text"
                            name={child}
                            key={parent + "." + child}
@@ -258,7 +260,7 @@ class Question extends React.Component {
              </div>);
         }
         else {
-          control = (<div>
+          control = (<div className="child">
             <input type="checkbox"
                    name={child}
                    key={parent + "." + child}
@@ -274,21 +276,23 @@ class Question extends React.Component {
     return children;
   }
 
-  generateInputOptions() {
+  generateInputOptions(validationError) {
     let inputOptions = <div/>;
     let responseType = this.props.question.questionForPatient.responseType;
     if (responseType === "DATE_PICKER_OPTIONAL") {
       inputOptions = (
-          <DatePicker className="DatePicker"
-                      placeholderText={this.props.labels[responseType].empty}
-                      maxDate={new Date()}
-                      isClearable
-                      selected={this.props.response}
-                      onChange={this.handleDatePickerChange}/>
+          <div className={"parent " +  (validationError ? "validationError" : "")}>
+            <DatePicker className="datePicker"
+                        placeholderText={this.props.labels[responseType].empty}
+                        maxDate={new Date()}
+                        isClearable
+                        selected={this.props.response}
+                        onChange={this.handleDatePickerChange}/>
+          </div>
       );
     } else if (responseType === "SINGLE_SELECTION") {
-      const options = this.props.question.questionForPatient.options.map((option) =>
-          <div>
+      inputOptions = this.props.question.questionForPatient.options.map((option) =>
+          <div className={"parent " +  (validationError ? "validationError" : "")}>
             <input type="radio"
                    name={option}
                    key={option}
@@ -296,14 +300,9 @@ class Question extends React.Component {
                    onChange={this.handleSingleSelection}/> {option}
           </div>
       );
-      inputOptions = (
-          <div>
-            {options}
-          </div>
-      );
     } else if (responseType === "MULTIPLE_SELECTION") {
-      const options = this.props.question.questionForPatient.options.map((option) =>
-          <div>
+      inputOptions = this.props.question.questionForPatient.options.map((option) =>
+          <div className={"parent " +  (validationError ? "validationError" : "")}>
             <input type="checkbox"
                    name={option}
                    key={option}
@@ -311,17 +310,11 @@ class Question extends React.Component {
                    onChange={this.handleMultipleSelection}/> {option}
           </div>
       );
-      inputOptions = (
-          <div>
-            {options}
-          </div>
-      );
     } else if (responseType === "SINGLE_SELECTION_THEN_MULTIPLE_SELECTION") {
       const optionsAlias = this.props.question.questionForPatient.options;
-      let options = {};
 
-      options = Object.keys(optionsAlias).map((option) =>
-          <div>
+      inputOptions = Object.keys(optionsAlias).map((option) =>
+          <div className={"parent " +  (validationError ? "validationError" : "")}>
             <input type="radio"
                    name={option}
                    key={option}
@@ -332,20 +325,15 @@ class Question extends React.Component {
             {this.generateChildren(optionsAlias, option)}
           </div>
       );
-      inputOptions = (
-          <div>
-            {options}
-          </div>
-      );
     }
-    return inputOptions;
+    return <div className="inputOptions">{inputOptions}</div>;
   }
 
   render() {
     return (
-        <div className="Question">
-          <p>{this.props.question.questionForPatient.question}</p>
-          {this.generateInputOptions()}
+        <div>
+          <div className="questionText">{this.props.question.questionForPatient.question}</div>
+          {this.generateInputOptions(this.props.validationError)}
         </div>
     );
   }
