@@ -1,0 +1,204 @@
+{
+  "questions": [
+    {
+      "number": "1",
+      "nextNumber": [
+        {"pattern": ".*", "next": "2"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "SINGLE_SELECTION",
+        "question": "Which of the following describes you?",
+        "options": [
+          "Pharmacist", "Other"
+        ]
+      }
+    },
+    {
+      "number": "2",
+      "nextNumber": [
+        {"pattern":  ".*", "next":  "3"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "SINGLE_SELECTION",
+        "question": "Which of the following best describes your type of practice?",
+        "options": [
+          "Independent pharmacy", "Chain pharmacy", "Student health pharmacy", "Clinic", "Other"
+        ]
+      }
+    },
+    {
+      "number": "3",
+      "nextNumber": [
+        {"pattern": ".*", "next": "4"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "ENTRY",
+        "question": "Please provide your US zip code",
+        "options": [
+          ""
+        ]
+      }
+    },
+    {
+      "number": "4",
+      "nextNumber": [
+        {"pattern": ".*", "next": "5"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "ENTRY",
+        "question": "How old is the patient?",
+        "options": [
+          ""
+        ]
+      }
+    },
+    {
+      "number": "5",
+      "nextNumber": [
+        {"pattern": "Yes", "next": "6"},
+        {"pattern":  "No", "next": "7"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "SINGLE_SELECTION",
+        "question": "Does the patient have menstrual periods?",
+        "options": [
+          "Yes", "No"
+        ]
+      }
+    },
+    {
+      "number": "6",
+      "nextNumber": [
+        {"pattern": ".*", "next": "7"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "DATE_PICKER_OPTIONAL",
+        "question": "When is the first day of the patient's last menstrual period?"
+      }
+    },
+    {
+      "number": "7",
+      "nextNumber": [
+        {"pattern": "Yes", "next": "END"},
+        {"pattern": "No", "next": "8"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "SINGLE_SELECTION",
+        "question": "Does the patient have any signs or symptoms of pregnancy?",
+        "options": [
+          "Yes", "No"
+        ]
+      }
+    },
+    {
+      "number": "8",
+      "nextNumber": [
+        {"pattern": ".*", "next": "9"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "MULTIPLE_SELECTION",
+        "question": "Please indicate if the patient meets any of the following criteria to be reasonably certain the patient is not pregnant (select all that apply)",
+        "options": [
+          "Had a baby less than 6 months ago, fully or nearly-fully breastfeeding AND has had no menstrual period since the delivery",
+          "Had a baby in the last 4 weeks",
+          "Miscarriage or abortion in the last 7 days",
+          "Last menstrual period started within the last 7 days",
+          "Abstained from sexual intercourse since your last menstrual period or delivery",
+          "Has been using a reliable contraceptive method consistently and correctly",
+          "Has taken emergency contraception in the last 5 days",
+          "None (please stop here and refer your patient)"
+        ]
+      }
+    },
+    {
+      "number": "9",
+      "nextNumber": [
+        {"pattern": ".*", "next": "10"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "MULTIPLE_SELECTION",
+        "question": "Please indicate if the patient has any of the following medical conditions (select all that apply)",
+        "options": [
+          "Current or past breast cancer",
+          "<42 days postpartum",
+          "Severe (decompensated) cirrhosis ",
+          "History of DVT/PE and not receiving anticoagulant history",
+          "Acute DVT/PE",
+          "DVT/PE and established anticoagulant therapy for at least 3 months ",
+          "Major surgery with prolonged immobilization ",
+          "Diabetes with nephropathy/retinopathy/neuropathy or diabetes with other vascular disease or diabetes of >20 years’ duration ",
+          "Current gallbladder disease or medically treated gallbladder disease",
+          "Migraines with aura ",
+          "History of malabsorptive bariatric procedures",
+          "History of combined oral contraceptive related cholestasis",
+          "Hypertension diagnosis",
+          "Inflammatory bowel disease (ulcerative colitis, Crohn’s disease)",
+          "Current and history of ischemic heart disease",
+          "Hepatocellular adenoma or malignant liver tumor (hepatoma)",
+          "Multiple risk factors for atherosclerotic cardiovascular disease (older age, smoking, hypertension, low HDL, high LDL, or high triglyceride levels) ",
+          "Multiple sclerosis with prolonged immobility ",
+          "Peripartum cardiomyopathy",
+          "Non breastfeeding <21 days postpartum or non breastfeeding 21 to 42 days postpartum with risk factors for VTE",
+          "Smoker and older than 35",
+          "Complicated solid organ transplant ",
+          "History of stroke ",
+          "Acute or history of superficial venous thrombosis",
+          "Systemic lupus erythematosus with positive (or unknown) antiphospholipid antibodies",
+          "Systemic lupus erythematosus with severe thrombocytopenia ",
+          "Unexplained vaginal bleeding ",
+          "Complicated valvular heart disease ",
+          "Acute or flare viral hepatitis"
+        ]
+      }
+    },
+    {
+      "number": "10",
+      "nextNumber": [
+        {"pattern": ".*", "next": "11"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "MULTIPLE_SELECTION",
+        "question": "Please indicate if the patient is taking any of the following medications (select all that apply)",
+        "options": [
+          "Fosamprenavir (FPV)",
+          "Certain anticonvulsants (phenytoin, carbamazepine, barbiturates, primidone, topiramate, oxcarbazepine)",
+          "Lamotrigine",
+          "Rifampin or rifabutin"
+        ]
+      }
+    },
+    {
+      "number": "11",
+      "nextNumber": [
+        {"pattern": ".*", "next": "12"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "MULTIPLE_SELECTION",
+        "question": "What is the patient's measured blood pressure today?",
+        "options": [
+          "Systolic 140-159 or diastolic 90-99",
+          "Systolic ≥ 160 or diastolic ≥ 100"
+        ]
+      }
+    }
+  ],
+  "labels": {
+    "DEFAULT": {
+      "submit": "Submit"
+    },
+    "DATE_PICKER_OPTIONAL": {
+      "empty": "I do not remember"
+    }
+  }
+}

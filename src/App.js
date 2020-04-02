@@ -1,6 +1,6 @@
 import React from 'react';
 import DatePicker from 'react-datepicker';
-import questions from './questions.json';
+import questions from './questions-abbreviated.json';
 
 import "react-datepicker/dist/react-datepicker.css"
 import './App.css';
@@ -94,9 +94,7 @@ class Survey extends React.Component {
 
     // Figure out what the next question is based on the answer to the current question.
     const answer = this.state.responses[this.state.currentQuestion]
-    let nextQuestion = question.nextNumber.find(entry => {
-      return new RegExp(entry.pattern).test(answer)
-    });
+    let nextQuestion = question.nextNumber.find(entry => new RegExp(entry.pattern).test(answer));
 
     if (null != nextQuestion) {
       nextQuestion = nextQuestion.next;
@@ -186,6 +184,23 @@ class Survey extends React.Component {
 
 class Question extends React.Component {
 
+  handleEntry = (option, event) => {
+    let response = this.props.response || {};
+
+    let text = event.target.value;
+    // if the free text length falls to zero, remove the "other" value from the response
+    if (text.length === 0) {
+      delete response[option];
+    }
+    else {
+      // otherwise put an object in there
+      response[option] = text;
+    }
+
+    this.props.onQuestionAnswered(this.props.question.number, response);
+    this.props.resetButtons();
+  };
+
   handleDatePickerChange = date => {
     this.props.onQuestionAnswered(this.props.question.number, date);
     this.props.resetButtons();
@@ -194,7 +209,7 @@ class Question extends React.Component {
   handleSingleSelection = event => {
     this.props.onQuestionAnswered(this.props.question.number, event.target.name);
     this.props.resetButtons();
-  }
+  };
 
   handleMultipleSelection = event => {
     let response = this.props.response || [];
@@ -205,7 +220,7 @@ class Question extends React.Component {
     }
     this.props.onQuestionAnswered(this.props.question.number, response);
     this.props.resetButtons();
-  }
+  };
 
   handleSingleThenMultiple(parent, child, event) {
     let response = this.props.response || {};
@@ -323,6 +338,17 @@ class Question extends React.Component {
                        this.handleSingleThenMultiple(option, null, e)}/> {option}
             <br/>
             {this.generateChildren(optionsAlias, option)}
+          </div>
+      );
+    } else if (responseType === "ENTRY") {
+      inputOptions = this.props.question.questionForPatient.options.map((option) =>
+          <div className={"parent " +  (validationError ? "validationError" : "")}>
+            {option} <input type="text"
+                   name={option}
+                   key={option}
+                   value={this.props.response ? (this.props.response[option] || "") : ""}
+                   onChange={(e) =>
+                       this.handleEntry(option, e)} />
           </div>
       );
     }
