@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/pharmacy-survey-react/static/css/main.a2183d86.chunk.css",
+    "main.js": "/pharmacy-survey-react/static/js/main.4079c94a.chunk.js",
+    "main.js.map": "/pharmacy-survey-react/static/js/main.4079c94a.chunk.js.map",
+    "runtime-main.js": "/pharmacy-survey-react/static/js/runtime-main.8c116423.js",
+    "runtime-main.js.map": "/pharmacy-survey-react/static/js/runtime-main.8c116423.js.map",
+    "static/css/2.b90ce945.chunk.css": "/pharmacy-survey-react/static/css/2.b90ce945.chunk.css",
+    "static/js/2.57fe8921.chunk.js": "/pharmacy-survey-react/static/js/2.57fe8921.chunk.js",
+    "static/js/2.57fe8921.chunk.js.map": "/pharmacy-survey-react/static/js/2.57fe8921.chunk.js.map",
+    "index.html": "/pharmacy-survey-react/index.html",
+    "precache-manifest.bc9344c5fc483fda199fd2a6b9c0f161.js": "/pharmacy-survey-react/precache-manifest.bc9344c5fc483fda199fd2a6b9c0f161.js",
+    "service-worker.js": "/pharmacy-survey-react/service-worker.js",
+    "static/css/2.b90ce945.chunk.css.map": "/pharmacy-survey-react/static/css/2.b90ce945.chunk.css.map",
+    "static/css/main.a2183d86.chunk.css.map": "/pharmacy-survey-react/static/css/main.a2183d86.chunk.css.map",
+    "static/js/2.57fe8921.chunk.js.LICENSE": "/pharmacy-survey-react/static/js/2.57fe8921.chunk.js.LICENSE"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.8c116423.js",
+    "static/css/2.b90ce945.chunk.css",
+    "static/js/2.57fe8921.chunk.js",
+    "static/css/main.a2183d86.chunk.css",
+    "static/js/main.4079c94a.chunk.js"
+  ]
+}
