@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/pharmacy-survey-react/precache-manifest.bc9344c5fc483fda199fd2a6b9c0f161.js"
+  "/pharmacy-survey-react/precache-manifest.92b6075171ca6ffa7cb32245eee8933a.js"
 );
 
 self.addEventListener('message', (event) => {
