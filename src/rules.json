@@ -68,5 +68,32 @@
       }
     ],
     "errorMessage": "Patient must be 18 or older unless prior prescription if in OR or HI"
+  },
+  {
+    "id": "4",
+    "dependsOn": [
+      {
+        "number": "8",
+        "field": "$SELF",
+        "operation": "containsAny",
+        "criteria": [
+          "Had a baby less than 6 months ago, fully or nearly-fully breastfeeding AND has had no menstrual period since the delivery",
+          "Had a baby in the last 4 weeks",
+          "Miscarriage or abortion in the last 7 days",
+          "Last menstrual period started within the last 7 days",
+          "Abstained from sexual intercourse since your last menstrual period or delivery",
+          "Has been using a reliable contraceptive method consistently and correctly",
+          "Has taken emergency contraception in the last 5 days"
+        ]
+      },
+      {
+        "number": "7",
+        "field": "$SELF",
+        "operation": "equals",
+        "criteria": "No",
+        "matchCriteria": true
+      }
+    ],
+    "errorMessage": "Patient must provide reason to explain why pregnancy is not suspected."
   }
 ]

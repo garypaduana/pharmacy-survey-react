@@ -46,6 +46,11 @@ class Algorithm extends React.Component {
     else if (dep.operation === "anyMatch") {
       return dep.criteria.includes(this.extractField(dep, responses));
     }
+    else if (dep.operation === "containsAny") {
+      return this.extractField(dep, responses)
+          .filter((x) => dep.criteria.includes(x))
+          .length > 0
+    }
     else {
       return false;
     }
