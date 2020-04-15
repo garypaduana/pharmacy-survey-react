@@ -31,12 +31,26 @@
     {
       "number": "3",
       "nextNumber": [
-        {"pattern": ".*", "next": "4"}
+        {"pattern": ".*", "next": "3.1"}
       ],
       "stateSpecific": [],
       "questionForPatient": {
         "responseType": "ENTRY",
         "question": "Please provide your US zip code",
+        "options": [
+          ""
+        ]
+      }
+    },
+    {
+      "number": "3.1",
+      "nextNumber": [
+        {"pattern": ".*", "next": "4"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "ENTRY",
+        "question": "Please provide your US state (two character abbreviation)",
         "options": [
           ""
         ]
@@ -100,7 +114,8 @@
     {
       "number": "8",
       "nextNumber": [
-        {"pattern": ".*", "next": "9"}
+        {"pattern": "None.*", "next": "END"},
+        {"pattern":  ".*", "next":  "9"}
       ],
       "stateSpecific": [],
       "questionForPatient": {
@@ -180,7 +195,7 @@
     {
       "number": "11",
       "nextNumber": [
-        {"pattern": ".*", "next": "12"}
+        {"pattern": ".*", "next": "END"}
       ],
       "stateSpecific": [],
       "questionForPatient": {

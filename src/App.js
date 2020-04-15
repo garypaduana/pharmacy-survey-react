@@ -1,12 +1,19 @@
 import React from 'react';
 import DatePicker from 'react-datepicker';
 import questions from './questions-abbreviated.json';
+import rules from './rules';
 
 import "react-datepicker/dist/react-datepicker.css"
 import './App.css';
 
+const ALL_PASS = "ALL_PASS";
+const NA = "NA";
+
 function App() {
-  const props = questions;
+  const props = {
+    survey: questions,
+    rules: rules
+  };
 
   return (
       <div className="App">
@@ -15,6 +22,84 @@ function App() {
         </header>
       </div>
   );
+}
+
+class Algorithm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { };
+  };
+
+  worker = (dep, responses) => {
+    {
+      if (null === responses[dep.number] || undefined === responses[dep.number]) {
+        return false;
+      }
+      else if (dep.operation === "eval"){
+        let value = responses[dep.number][dep.field];
+        return eval(value + dep.criteria);
+      }
+      else if (dep.operation === "anyMatch") {
+        return dep.criteria.includes(responses[dep.number][dep.field]);
+      }
+      else {
+        return false;
+      }
+    }
+  };
+
+  evaluateRule(rule, responses) {
+    let shouldRuleApply = rule.dependsOn
+        .filter((dep) => dep.matchCriteria)
+        .every((dep) => this.worker(dep, responses));
+
+    if (shouldRuleApply) {
+      let everyRuleSatisfied = rule.dependsOn.every((dep) => this.worker(dep, responses));
+
+      if (everyRuleSatisfied) {
+        return ALL_PASS;
+      }
+      else {
+        return rule.errorMessage;
+      }
+    }
+    else {
+      return NA;
+    }
+  }
+
+  render() {
+    const messages = this.props.rules.map((rule) => {
+      let evaluation = this.evaluateRule(rule, this.props.responses);
+      let result = (<div/>);
+      if (evaluation !== NA && evaluation !== ALL_PASS) {
+        result = (<li key={rule.id}><Evaluation message={evaluation}/></li>);
+      }
+      return result;
+    });
+
+    return (
+        <div>
+          <div className="container">
+            <h2>Evaluation</h2>
+              <ul>{messages}</ul>
+          </div>
+        </div>
+    );
+  }
+}
+
+class Evaluation extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { };
+  }
+
+  render() {
+    return (
+        <div>{this.props.message}</div>
+    );
+  }
 }
 
 class Survey extends React.Component {
@@ -41,7 +126,7 @@ class Survey extends React.Component {
   }
 
   onQuestionAnswered(number, response) {
-    let question = this.props.questions.find(question => question.number === number);
+    let question = this.props.survey.questions.find(question => question.number === number);
 
     this.setState((prevState, props) => ({
       responses: {
@@ -90,7 +175,7 @@ class Survey extends React.Component {
 
   goNext(event) {
     // Get the object of the current question
-    let question = this.props.questions.find(question => question.number === this.state.currentQuestion);
+    let question = this.props.survey.questions.find(question => question.number === this.state.currentQuestion);
 
     // Figure out what the next question is based on the answer to the current question.
     const answer = this.state.responses[this.state.currentQuestion]
@@ -100,9 +185,14 @@ class Survey extends React.Component {
       nextQuestion = nextQuestion.next;
     }
 
+    if ("END" === nextQuestion) {
+      alert("You're at the end!")
+
+    }
+
     // Only advance to the next question if it exists based on the previous answer.
     // Add the current question to the stack of history.
-    if (null != nextQuestion && this.props.questions.find(question => question.number === nextQuestion)) {
+    else if (this.props.survey.questions.find(question => question.number === nextQuestion)) {
       this.setState((prevState, props) => {
         prevState.backHistory.shift();
         return {
@@ -145,9 +235,9 @@ class Survey extends React.Component {
   }
 
   render() {
-    let question = this.props.questions.find(question => question.number === this.state.currentQuestion);
+    let question = this.props.survey.questions.find(question => question.number === this.state.currentQuestion);
     let content = question ? <Question question={question}
-                                       labels={this.props.labels}
+                                       labels={this.props.survey.labels}
                                        response={this.state.responses[this.state.currentQuestion]}
                                        onQuestionAnswered={this.onQuestionAnswered}
                                        validationError={!this.state.nextEnabled}
@@ -157,7 +247,7 @@ class Survey extends React.Component {
     return (
         <div>
           <div className="container survey">
-            <div className="header"> Question "{this.state.currentQuestion}" of {this.props.questions.length}</div>
+            <div className="header"> Question "{this.state.currentQuestion}" of {this.props.survey.questions.length}</div>
             <form onSubmit={this.handleSubmit}>
               <div className="question">{content}</div>
             </form>
@@ -175,7 +265,7 @@ class Survey extends React.Component {
             </button>
             <br/>
           </div>
-          <br/> <br/>
+          <Algorithm responses={this.state.responses} rules={this.props.rules}/>
           <pre className="code">{JSON.stringify(this.state, null, 2)}</pre>
         </div>
     );

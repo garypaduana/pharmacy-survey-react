@@ -1,0 +1,44 @@
+[
+  {
+    "id": "1",
+    "dependsOn": [
+      {
+        "number": "4",
+        "field": "",
+        "operation": "eval",
+        "criteria": ">0"
+      },
+      {
+        "number": "3.1",
+        "field": "",
+        "operation": "anyMatch",
+        "criteria": [
+          "WA", "CA", "NM", "MD"
+        ],
+        "matchCriteria": true
+      }
+    ],
+    "errorMessage": "A patient in WA, CA, NM, or MD must supply an age."
+  },
+  {
+    "id": "2",
+    "dependsOn": [
+      {
+        "number": "4",
+        "field": "",
+        "operation": "eval",
+        "criteria": ">=18"
+      },
+      {
+        "number": "3.1",
+        "field": "",
+        "operation": "anyMatch",
+        "criteria": [
+          "CO", "UT"
+        ],
+        "matchCriteria": true
+      }
+    ],
+    "errorMessage": "Patient must be at least 18 years old if in CO or UT"
+  }
+]
