@@ -30,21 +30,24 @@ class Algorithm extends React.Component {
     this.state = { };
   };
 
+  extractField = (dep, responses) => dep.field === "$SELF" ?
+      responses[dep.number] : responses[dep.number][dep.field];
+
   worker = (dep, responses) => {
-    {
-      if (null === responses[dep.number] || undefined === responses[dep.number]) {
-        return false;
-      }
-      else if (dep.operation === "eval"){
-        let value = responses[dep.number][dep.field];
-        return eval(value + dep.criteria);
-      }
-      else if (dep.operation === "anyMatch") {
-        return dep.criteria.includes(responses[dep.number][dep.field]);
-      }
-      else {
-        return false;
-      }
+    if (null === responses[dep.number] || undefined === responses[dep.number]) {
+      return false;
+    }
+    else if (dep.operation === "equals") {
+      return this.extractField(dep, responses) === dep.criteria;
+    }
+    else if (dep.operation === "eval") {
+      return eval(this.extractField(dep, responses) + dep.criteria);
+    }
+    else if (dep.operation === "anyMatch") {
+      return dep.criteria.includes(this.extractField(dep, responses));
+    }
+    else {
+      return false;
     }
   };
 
@@ -54,7 +57,8 @@ class Algorithm extends React.Component {
         .every((dep) => this.worker(dep, responses));
 
     if (shouldRuleApply) {
-      let everyRuleSatisfied = rule.dependsOn.every((dep) => this.worker(dep, responses));
+      let everyRuleSatisfied = rule.dependsOn
+          .every((dep) => this.worker(dep, responses));
 
       if (everyRuleSatisfied) {
         return ALL_PASS;
@@ -106,7 +110,7 @@ class Survey extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentQuestion: "1",
+      currentQuestion: "0.1",
       responses: {},
       history: [],
       backHistory: [],

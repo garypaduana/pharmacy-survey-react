@@ -1,6 +1,20 @@
 {
   "questions": [
     {
+      "number": "0.1",
+      "nextNumber": [
+        {"pattern": ".*", "next": "1"}
+      ],
+      "stateSpecific": [],
+      "questionForPatient": {
+        "responseType": "SINGLE_SELECTION",
+        "question": "Does the patient have a prior prescription?",
+        "options": [
+          "Yes", "No"
+        ]
+      }
+    },
+    {
       "number": "1",
       "nextNumber": [
         {"pattern": ".*", "next": "2"}

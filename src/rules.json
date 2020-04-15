@@ -40,5 +40,33 @@
       }
     ],
     "errorMessage": "Patient must be at least 18 years old if in CO or UT"
+  },
+  {
+    "id": "3",
+    "dependsOn": [
+      {
+        "number": "0.1",
+        "field": "$SELF",
+        "operation": "equals",
+        "criteria": "No",
+        "matchCriteria": true
+      },
+      {
+        "number": "4",
+        "field": "",
+        "operation": "eval",
+        "criteria": ">=18"
+      },
+      {
+        "number": "3.1",
+        "field": "",
+        "operation": "anyMatch",
+        "criteria": [
+          "OR", "HI"
+        ],
+        "matchCriteria": true
+      }
+    ],
+    "errorMessage": "Patient must be 18 or older unless prior prescription if in OR or HI"
   }
 ]
