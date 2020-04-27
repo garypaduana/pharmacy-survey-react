@@ -7,6 +7,7 @@ import "react-datepicker/dist/react-datepicker.css"
 import './App.css';
 
 const ALL_PASS = "ALL_PASS";
+const NO_VALUE = "";
 const NA = "NA";
 
 function App() {
@@ -30,25 +31,31 @@ class Algorithm extends React.Component {
     this.state = { };
   };
 
-  extractField = (dep, responses) => dep.field === "$SELF" ?
-      responses[dep.number] : responses[dep.number][dep.field];
+  extractField = (dependency, responses) => dependency.field === "$SELF" ?
+      responses[dependency.number] : responses[dependency.number][dependency.field];
 
-  worker = (dep, responses) => {
-    if (null === responses[dep.number] || undefined === responses[dep.number]) {
+  worker = (dependency, responses) => {
+    if (null === responses[dependency.number] || undefined === responses[dependency.number]) {
       return false;
     }
-    else if (dep.operation === "equals") {
-      return this.extractField(dep, responses) === dep.criteria;
+
+    let value = this.extractField(dependency, responses);
+
+    if (dependency.operation === "equals") {
+      return value === dependency.criteria;
     }
-    else if (dep.operation === "eval") {
-      return eval(this.extractField(dep, responses) + dep.criteria);
+    else if (dependency.operation === "notEquals") {
+      return value !== dependency.criteria;
     }
-    else if (dep.operation === "anyMatch") {
-      return dep.criteria.includes(this.extractField(dep, responses));
+    else if (dependency.operation === "eval") {
+      return eval(value + dependency.criteria);
     }
-    else if (dep.operation === "containsAny") {
-      return this.extractField(dep, responses)
-          .filter((x) => dep.criteria.includes(x))
+    else if (dependency.operation === "anyMatch") {
+      return dependency.criteria.includes(value);
+    }
+    else if (dependency.operation === "containsAny") {
+      return value
+          .filter((x) => dependency.criteria.includes(x))
           .length > 0
     }
     else {
@@ -69,7 +76,7 @@ class Algorithm extends React.Component {
         return ALL_PASS;
       }
       else {
-        return rule.errorMessage;
+        return rule.failure.message;
       }
     }
     else {

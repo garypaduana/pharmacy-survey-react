@@ -18,7 +18,10 @@
         "matchCriteria": true
       }
     ],
-    "errorMessage": "A patient in WA, CA, NM, or MD must supply an age."
+    "failure": {
+      "message": "A patient in WA, CA, NM, or MD must supply an age.",
+      "args": { }
+    }
   },
   {
     "id": "2",
@@ -39,7 +42,10 @@
         "matchCriteria": true
       }
     ],
-    "errorMessage": "Patient must be at least 18 years old if in CO or UT"
+    "failure": {
+      "message": "Patient must be at least 18 years old if in CO or UT",
+      "args": { }
+    }
   },
   {
     "id": "3",
@@ -67,7 +73,10 @@
         "matchCriteria": true
       }
     ],
-    "errorMessage": "Patient must be 18 or older unless prior prescription if in OR or HI"
+    "failure": {
+      "message": "Patient must be 18 or older unless prior prescription if in OR or HI",
+      "args": { }
+    }
   },
   {
     "id": "4",
@@ -94,6 +103,9 @@
         "matchCriteria": true
       }
     ],
-    "errorMessage": "Patient must provide reason to explain why pregnancy is not suspected."
+    "failure": {
+      "message": "Patient must provide reason to explain why pregnancy is not suspected.",
+      "args": { }
+    }
   }
 ]

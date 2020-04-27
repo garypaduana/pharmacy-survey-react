@@ -3,7 +3,8 @@
     {
       "number": "0.1",
       "nextNumber": [
-        {"pattern": ".*", "next": "1"}
+        {"pattern": "Yes", "next": "1"},
+        {"pattern": "No", "next": "1"}
       ],
       "stateSpecific": [],
       "questionForPatient": {
